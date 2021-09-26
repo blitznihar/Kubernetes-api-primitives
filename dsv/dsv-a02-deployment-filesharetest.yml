@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dsv-deployment
+  namespace: dsv
+  labels:
+    name: dsv-pod-deployments
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata: 
+      labels:
+        app: web
+    spec:
+      containers:
+      -  name: dsv-nginx-con
+         image: nginx
+         resources:
+           limits:
+             memory: "32Mi"
+             cpu: "100m"
+         volumeMounts:
+         -  mountPath: /usr/share/nginx/html
+            name: pod-data
+         ports:
+         - containerPort: 80
+      -  name: dsv-busyboxd-con
+         image: busybox
+         command: ['sh','-c','sleep 2; while true; do echo $(cat /pod-data/index.html); sleep 1;  done;']
+         volumeMounts:
+         - mountPath: /pod-data
+           name: pod-data
+         resources:
+           limits:
+             memory: "32Mi"
+             cpu: "100m"
+         livenessProbe:
+           exec: 
+             command:
+             - echo
+             - liveliness testing
+           initialDelaySeconds: 5
+           periodSeconds: 5
+         readinessProbe:
+            exec:
+             command:
+             - echo
+             - readiness testing
+      -  name: dsv-busybox-con
+         image: busybox
+         command: ['sh','-c','sleep 2; while true; do echo "<html><head><title>Page Title</title></head><body><h1>$(hostname)</h1><p>$(date)</p></body></html>" >/pod-data/index.html; sleep 1;  done;']
+         volumeMounts:
+         - mountPath: /pod-data
+           name: pod-data
+         resources:
+           limits:
+             memory: "32Mi"
+             cpu: "100m"
+         livenessProbe:
+           exec: 
+             command:
+             - echo
+             - liveliness testing
+           initialDelaySeconds: 5
+           periodSeconds: 5
+         readinessProbe:
+            exec:
+             command:
+             - echo
+             - readiness testing
+      volumes:
+      - name: pod-data
+        emptyDir: {}
