@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bb-pod
+  namespace: bb
+  labels:
+    name: bb-pod
+spec:
+  containers:
+  - name: bb-pod
+    image: busybox
+    resources:
+      limits:
+        memory: "64Mi"
+        cpu: "250m"
+    command: ['sh','-c','echo "Blitz Kubernetes!!!" && sleep 300']
+  restartPolicy: Never    

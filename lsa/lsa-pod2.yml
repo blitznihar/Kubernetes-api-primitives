@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: lsa-pod2
+  namespace: lsa
+  labels:
+    name: lsa-pod2
+    type: backend
+    environment: production
+spec:
+  containers:
+  - name: busybox--pod
+    image: busybox
+    resources:
+      limits:
+        memory: "16Mi"
+        cpu: "100m"
+    command: ['sh','-c','x=1; while true; do echo "Blitz Kubernetes!!! $x times" >> /pod-data/index.html; ((x ++)); sleep 1;  done']
+

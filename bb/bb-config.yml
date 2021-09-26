@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bb-config
+  namespace: bb
+  labels:
+    app: bb-config
+data:
+  my-key: Blitz Kubernetes!!! Done right!!

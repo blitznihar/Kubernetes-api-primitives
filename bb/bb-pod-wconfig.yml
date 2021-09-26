@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bb-pod-wconfig
+  namespace: bb
+  labels:
+    name: bb-pod-wconfig
+spec:
+  containers:
+  - name: bb-pod-wconfig
+    image: busybox
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    command: ['sh','-c','echo "from busybox-pod-withconfig: $(bb_configmap_mykey)" && sleep 300']
+    env:
+      - name: bb_configmap_mykey
+        valueFrom:
+          configMapKeyRef:
+            name: bb-config
+            key: my-key
+  restartPolicy: Never

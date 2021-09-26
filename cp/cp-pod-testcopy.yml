@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cp-pod
+  namespace: cp
+  labels:
+    name: cp-pod-test-copy
+    environment: prod
+spec:
+  containers:
+  - name: cp-pod-c
+    image: busybox
+    resources:
+      limits:
+        memory: "16Mi"
+        cpu: "100m"
+    command: ['sh', '-c', 'echo "$(cat /tmp/data/cp-text.txt)" && sleep 300']
+    volumeMounts:
+    - mountPath: /tmp/data
+      name: data
+    - mountPath: /tmp/data/cp-text.txt
+      name: cp-text
+  volumes:
+  - name: data
+    hostPath: 
+      path: /volume/d/workspace/kubernetes/vol/data
+      type: DirectoryOrCreate
+  - name: cp-text
+    hostPath: 
+      path: /volumes/d/workspace/kubernetes/vol/data/cp-text.txt
+      type: FileOrCreate   
+  
